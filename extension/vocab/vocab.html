@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>단어장 — SubAudioOnly</title>
+  <link rel="stylesheet" href="../options/base.css">
+  <link rel="stylesheet" href="vocab.css">
+</head>
+<body>
+  <main>
+    <h1>단어장 <span id="count" class="count"></span></h1>
+
+    <div class="actions">
+      <button type="button" id="copy" class="primary">마크다운 복사</button>
+      <button type="button" id="clear" class="danger">전체 삭제</button>
+    </div>
+    <p id="status" class="muted" role="status"></p>
+
+    <p id="empty" class="empty" hidden>아직 저장한 단어가 없습니다.<br>YouTube 자막에서 단어를 탭한 뒤 “단어장에 추가”를 눌러 보세요.</p>
+    <ul id="list"></ul>
+
+    <section id="export">
+      <h2><label for="md">마크다운 표 (노션에 붙여넣으면 표가 됩니다)</label></h2>
+      <textarea id="md" readonly rows="8"></textarea>
+    </section>
+
+    <p><a class="btn" href="../options/options.html">설정</a></p>
+  </main>
+  <script src="../shared/contract.js"></script>
+  <script src="vocab.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SubAudioOnly</title>
+  <link rel="stylesheet" href="../options/base.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <main>
+    <h1>SubAudioOnly</h1>
+    <p class="pair"><span class="muted">학습 언어 → 자국어</span><span id="pair"></span></p>
+
+    <div class="card">
+      <label class="row" for="audioOnly">
+        <span>오디오 전용</span>
+        <input type="checkbox" id="audioOnly">
+      </label>
+      <label class="row" for="dualSubs">
+        <span>이중 자막</span>
+        <input type="checkbox" id="dualSubs">
+      </label>
+      <label class="row" for="dictionary">
+        <span>단어 클릭 사전</span>
+        <input type="checkbox" id="dictionary">
+      </label>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="openVocab" class="primary">단어장 열기</button>
+      <button type="button" id="openOptions">설정 열기</button>
+    </div>
+  </main>
+  <script src="../shared/contract.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+.warn {
+  margin: 8px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--warn-bg);
+  color: var(--warn-text);
+  font-size: 0.9rem;
+}
+
+.scale { flex-wrap: wrap; }
+.scale output { color: var(--muted); font-variant-numeric: tabular-nums; }
+.scale input { flex: 1 0 100%; min-height: 44px; margin: 0; accent-color: var(--switch-on); }

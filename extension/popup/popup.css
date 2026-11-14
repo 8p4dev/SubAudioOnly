@@ -1,0 +1,4 @@
+/* 데스크톱에서는 팝업 폭을 정하고, Android(전체 페이지)에서는 화면 폭을 따른다. */
+body { min-width: 300px; }
+.pair { margin: 0 4px 12px; font-weight: 600; }
+.pair .muted { font-weight: 400; }

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SubAudioOnly 설정</title>
+  <link rel="stylesheet" href="base.css">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <h1>SubAudioOnly 설정</h1>
+
+    <h2>언어</h2>
+    <div class="card">
+      <label class="row" for="targetLang">
+        <span>학습 언어<small>공부하려는 언어</small></span>
+        <select id="targetLang"></select>
+      </label>
+      <label class="row" for="nativeLang">
+        <span>자국어<small>번역과 뜻을 볼 언어</small></span>
+        <select id="nativeLang"></select>
+      </label>
+    </div>
+    <p id="sameLang" class="warn" role="status" hidden>자국어와 학습 언어가 같습니다. 번역 자막과 사전이 같은 언어로 표시됩니다.</p>
+
+    <h2>기능</h2>
+    <div class="card">
+      <label class="row" for="audioOnly">
+        <span>오디오 전용<small>영상을 불러오지 않고 소리만 재생</small></span>
+        <input type="checkbox" id="audioOnly">
+      </label>
+      <label class="row" for="dualSubs">
+        <span>이중 자막<small>학습 언어와 자국어 자막을 함께 표시</small></span>
+        <input type="checkbox" id="dualSubs">
+      </label>
+      <label class="row" for="dictionary">
+        <span>단어 클릭 사전<small>자막의 단어를 탭하면 뜻 표시</small></span>
+        <input type="checkbox" id="dictionary">
+      </label>
+      <div class="row scale">
+        <label for="subtitleScale">자막 크기</label>
+        <output id="scaleOut" for="subtitleScale"></output>
+        <input type="range" id="subtitleScale" min="0.6" max="2" step="0.1">
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn primary" href="../vocab/vocab.html">단어장 열기</a>
+      <button type="button" id="reset">기본값으로 되돌리기</button>
+    </div>
+  </main>
+  <script src="../shared/contract.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

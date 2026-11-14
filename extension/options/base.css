@@ -1,0 +1,95 @@
+/* 세 페이지(options, popup, vocab) 공통 스타일 */
+:root {
+  color-scheme: light dark;
+  --bg: light-dark(#f3f4f6, #101214);
+  --card: light-dark(#ffffff, #1b1e22);
+  --text: light-dark(#191c20, #e7e9ec);
+  --muted: light-dark(#5a626d, #9ba3ae);
+  --line: light-dark(#dfe2e7, #2d3239);
+  --accent: light-dark(#0a62bd, #7ab8ff);
+  --switch-off: light-dark(#a9b0ba, #515862);
+  --switch-on: light-dark(#0a62bd, #2f7dd1);
+  --danger: light-dark(#b3261e, #ff8f85);
+  --warn-bg: light-dark(#fff4d6, #3a3113);
+  --warn-text: light-dark(#5c4300, #ffdf8a);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font: 16px/1.5 system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  word-break: keep-all; /* 한국어는 어절 단위로 줄바꿈 */
+  overflow-wrap: anywhere;
+}
+
+main { max-width: 40rem; margin: 0 auto; padding: 16px; }
+
+h1 { font-size: 1.25rem; margin: 4px 4px 16px; }
+h2 { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin: 24px 4px 8px; }
+
+a { color: var(--accent); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 16px;
+}
+.row + .row { border-top: 1px solid var(--line); }
+.row small, .muted { display: block; color: var(--muted); font-size: 0.85rem; }
+
+/* 스위치: 네이티브 체크박스. 손잡이는 배경 그라디언트(가상 요소 없이). */
+input[type="checkbox"] {
+  appearance: none;
+  flex: none;
+  width: 52px;
+  height: 32px;
+  margin: 0;
+  border-radius: 16px;
+  background: radial-gradient(circle closest-side, #fff 76%, transparent 80%) 0 0 / 32px 32px no-repeat var(--switch-off);
+  transition: background-position 0.15s, background-color 0.15s;
+  cursor: pointer;
+}
+input[type="checkbox"]:checked { background-position: 20px 0; background-color: var(--switch-on); }
+
+select, button, .btn {
+  min-height: 44px;
+  padding: 8px 14px;
+  font: inherit;
+  color: var(--text);
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+select { min-width: 0; max-width: 60%; }
+button, .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: default; }
+.primary { background: var(--switch-on); border-color: var(--switch-on); color: #fff; }
+.danger { color: var(--danger); }
+
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.actions > * { flex: 1 1 8rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  input[type="checkbox"] { transition: none; }
+}
