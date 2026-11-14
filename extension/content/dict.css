@@ -1,0 +1,124 @@
+/* R4/R5 사전 팝업. 세로: 하단 시트(플레이어가 위쪽) / 가로: 상단(자막이 하단). */
+#sao-dict {
+  all: initial;
+  position: fixed;
+  z-index: 2147483600;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  width: min(420px, calc(100vw - 24px));
+  max-height: min(60vh, 420px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #1f1f1f;
+  color: #f1f1f1;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+  font: 15px/1.45 system-ui, sans-serif;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+@media (orientation: landscape) {
+  #sao-dict {
+    top: calc(8px + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    max-height: min(70vh, 420px);
+  }
+}
+
+#sao-dict * {
+  box-sizing: border-box;
+  font: inherit;
+  color: inherit;
+}
+
+#sao-dict .sao-dict-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}
+
+#sao-dict .sao-dict-word {
+  flex: 1;
+  min-width: 0;
+  font-size: 18px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+#sao-dict button {
+  flex: none;
+  min-height: 44px;
+  margin: 0;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#sao-dict .sao-dict-close {
+  width: 44px;
+  background: transparent;
+  font-size: 24px;
+  line-height: 1;
+}
+
+#sao-dict .sao-dict-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+}
+
+#sao-dict .sao-dict-status {
+  color: #aaa;
+}
+
+#sao-dict .sao-dict-status.sao-dict-error {
+  color: #ff8a80;
+}
+
+#sao-dict .sao-dict-translation {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+#sao-dict .sao-dict-entry {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+#sao-dict .sao-dict-pos {
+  flex: none;
+  min-width: 4.5em;
+  color: #8ab4f8;
+  font-size: 13px;
+}
+
+#sao-dict .sao-dict-add {
+  padding: 0 16px;
+  background: #3ea6ff;
+  color: #0f0f0f;
+  font-weight: 600;
+}
+
+#sao-dict .sao-dict-add:disabled {
+  background: #3a3a3a;
+  color: #aaa;
+  cursor: default;
+}
+
+/* 선택된 단어 강조(span 자체는 subs 소유, 클래스만 토글) */
+.sao-word.sao-dict-active {
+  background: rgba(62, 166, 255, 0.45);
+  border-radius: 3px;
+}
