@@ -1,0 +1,9 @@
+{
+  "name": "subaudioonly",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "lint": "npx --yes web-ext lint -s extension",
+    "build": "npx --yes web-ext build -s extension -a dist --overwrite-dest"
+  }
+}

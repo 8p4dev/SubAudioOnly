@@ -1,0 +1,47 @@
+{
+  "manifest_version": 2,
+  "name": "SubAudioOnly",
+  "version": "0.1.0",
+  "description": "외국어 공부용: YouTube 오디오 전용 재생 + 이중 자막 + 클릭 사전 + 단어장",
+  "browser_specific_settings": {
+    "gecko": { "id": "subaudioonly@local", "strict_min_version": "125.0" },
+    "gecko_android": { "strict_min_version": "125.0" }
+  },
+  "permissions": [
+    "storage",
+    "clipboardWrite",
+    "webRequest",
+    "webRequestBlocking",
+    "*://*.youtube.com/*",
+    "*://*.googlevideo.com/*",
+    "https://translate.googleapis.com/*"
+  ],
+  "background": {
+    "scripts": [
+      "shared/contract.js",
+      "background/main.js",
+      "background/audio.js",
+      "background/captions.js",
+      "background/dict.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "run_at": "document_start",
+      "css": ["content/audio.css", "content/subtitles.css", "content/dict.css"],
+      "js": [
+        "shared/contract.js",
+        "content/pick-tracks.js",
+        "content/audio.js",
+        "content/subtitles.js",
+        "content/dict.js"
+      ]
+    }
+  ],
+  "browser_action": {
+    "default_title": "SubAudioOnly",
+    "default_popup": "popup/popup.html"
+  },
+  "options_ui": { "page": "options/options.html", "open_in_tab": true }
+}
