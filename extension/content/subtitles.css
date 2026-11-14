@@ -1,0 +1,48 @@
+/* subs 에이전트: 이중 자막 오버레이 */
+#sao-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12%;
+  z-index: 2147483000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  pointer-events: none;
+  text-align: center;
+  font-family: "YouTube Noto", Roboto, Arial, sans-serif;
+  font-size: calc(clamp(14px, 4.2vw, 26px) * var(--sao-scale, 1));
+  line-height: 1.35;
+}
+
+#sao-overlay .sao-line {
+  max-width: 100%;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: rgba(8, 8, 8, 0.75);
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+#sao-overlay .sao-line:empty {
+  display: none;
+}
+
+#sao-overlay .sao-line-native {
+  font-size: 0.85em;
+  color: #ffe9a8;
+}
+
+#sao-overlay .sao-word {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* 우리 자막을 확보했을 때만 YouTube 기본 자막 창을 숨긴다 */
+html.sao-overlay-on .ytp-caption-window-container,
+html.sao-overlay-on .caption-window {
+  display: none !important;
+}
