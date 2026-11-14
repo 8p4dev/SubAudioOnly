@@ -1,0 +1,13 @@
+/* R1 오디오 전용: <video>만 가린다. 플레이어 컨테이너의 다른 자식(#sao-overlay 등)은 건드리지 않는다. */
+html.sao-audio-only video {
+  opacity: 0 !important;
+}
+html.sao-audio-only .html5-video-player,
+html.sao-audio-only .html5-video-container {
+  background: #000 !important;
+}
+/* 썸네일/포스터, 데스크톱 앰비언트 모드 */
+html.sao-audio-only .ytp-cued-thumbnail-overlay-image,
+html.sao-audio-only #cinematics {
+  visibility: hidden !important;
+}
