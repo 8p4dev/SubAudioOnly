@@ -1,4 +1,4 @@
-// 플레이어 좌상단의 빠른 스위치: 작은 버튼을 탭하면 기능 3개를 켜고 끄는 칩이 펼쳐진다.
+// 플레이어 좌상단의 빠른 스위치: 작은 버튼을 탭하면 기능 3개를 켜고 끄는 칩과 단어 목록 열기 버튼이 펼쳐진다.
 'use strict';
 
 (() => {
@@ -25,7 +25,10 @@
     b.dataset.key = key;
     return b;
   });
-  panel.append(...chips);
+  // 설정 토글이 아니라 단어 목록 패널(wordlist.js)을 여닫는 버튼 — 켜짐/꺼짐 표시가 없다.
+  const wordsBtn = button('sao-toggle-chip sao-toggle-words', '≡ 단어');
+  wordsBtn.setAttribute('aria-label', '영상 단어 목록');
+  panel.append(...chips, wordsBtn);
   root.append(main, panel);
 
   const paint = () => {
@@ -56,6 +59,11 @@
     e.preventDefault();
     e.stopPropagation();
     if (b === main) return setOpen(panel.hidden);
+    if (b === wordsBtn) {
+      setOpen(false);
+      document.dispatchEvent(new CustomEvent('sao:words-toggle'));
+      return;
+    }
     SAO.setSettings({ [b.dataset.key]: !settings[b.dataset.key] });
     setOpen(true);
   }, true);
