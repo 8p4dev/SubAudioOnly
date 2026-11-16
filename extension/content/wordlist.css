@@ -1,1 +1,166 @@
-/* stub */
+/* 영상 단어 목록 패널. 세로: 플레이어 아래 영역(--sao-words-top은 wordlist.js가 설정) / 가로: 오른쪽 옆. */
+#sao-words {
+  all: initial;
+  position: fixed;
+  z-index: 2147483300;
+  top: var(--sao-words-top, 40vh);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: #1f1f1f;
+  color: #f1f1f1;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.5);
+  font: 15px/1.4 system-ui, sans-serif;
+  pointer-events: auto;
+  touch-action: manipulation;
+}
+
+@media (orientation: landscape) {
+  #sao-words {
+    top: 0;
+    left: auto;
+    width: max(45%, 280px);
+    max-width: 100%;
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+
+  /* 패널이 열려 있는 동안 자막 오버레이를 패널 왼쪽으로 좁혀 가려지지 않게 한다 */
+  html.sao-words-open #sao-overlay {
+    right: max(45%, 280px);
+  }
+}
+
+/* 페이지 CSS(div/span/button 전역 규칙)를 모두 지운다. display도 지워지므로 아래에서 요소마다 지정한다. */
+#sao-words * {
+  all: unset;
+  box-sizing: border-box;
+}
+
+#sao-words button {
+  flex: none;
+  min-height: 44px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#sao-words button[hidden] {
+  display: none;
+}
+
+#sao-words button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -2px;
+}
+
+#sao-words .sao-words-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 4px 12px;
+  border-bottom: 1px solid #333;
+}
+
+#sao-words .sao-words-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 700;
+}
+
+#sao-words .sao-words-sort {
+  padding: 0 12px;
+  background: #333;
+  font-size: 13px;
+  line-height: 44px;
+}
+
+#sao-words .sao-words-close {
+  width: 44px;
+  font-size: 24px;
+  line-height: 44px;
+}
+
+#sao-words .sao-words-note {
+  display: block;
+  flex: none;
+  padding: 8px 12px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+#sao-words .sao-words-note:empty {
+  display: none;
+}
+
+#sao-words .sao-words-list {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+#sao-words .sao-words-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 6px 12px;
+  border-bottom: 1px solid #2c2c2c;
+  overflow-wrap: anywhere;
+}
+
+#sao-words .sao-word {
+  flex: 0 1 auto;
+  max-width: 55%;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 행 어디를 탭해도 단어를 탭한 것이 되게 한다(dict.js는 .sao-word의 클릭만 본다) */
+#sao-words .sao-word::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+#sao-words .sao-words-count {
+  flex: none;
+  color: #8ab4f8;
+  font-size: 12px;
+}
+
+#sao-words .sao-words-meaning {
+  flex: 1;
+  min-width: 0;
+  color: #c8c8c8;
+  text-align: right;
+}
+
+#sao-words .sao-words-mark {
+  display: none;
+  flex: none;
+  color: #ffd54f;
+}
+
+#sao-words .sao-words-saved .sao-words-mark {
+  display: inline;
+}
+
+#sao-words .sao-words-more {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  line-height: 48px;
+  border-radius: 0;
+  color: #3ea6ff;
+}
