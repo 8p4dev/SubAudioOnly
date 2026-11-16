@@ -64,7 +64,50 @@
     return c && ms < c.end ? c.text : '';
   }
 
-  /** 텍스트 -> [{text, word}] (word=true만 사전 조회 대상) */
+  // ---- 일본어 분절 후처리 ----
+  // Intl.Segmenter는 일본어 활용형을 1~2글자로 쪼갠다(食·べ·まし·た). 어간 뒤의 어미·조동사를 한 단위로 묶는다.
+  // ponytail: 사전 없는 휴리스틱. 틀리는 예 — 조사 없이 이어지는 말(人がいます: 엔진이 'がい'로 자름),
+  // 한자 없는 동사(かかり|ます), 엔진이 조사와 붙여 자른 조각(でく, はと). 사용자는 사전 팝업의 범위 조절로 바로잡는다.
+  // 더 정확해야 하면 형태소 분석기(사전 수십 MB)가 필요하다.
+  const JA_HAN = /[\p{sc=Han}々]/u;
+  const JA_HIRA = /^[\p{sc=Hiragana}ー]+$/u;
+  const JA_STEM = /^[\p{sc=Han}々\p{sc=Hiragana}]+$/u; // 한자가 든 어간(行, 行き, 勉強)
+  const JA_NOUN = /^[\p{sc=Han}々]{2,}$/u;             // 한자 2자 이상: する 활용만 붙인다
+  // 여기서 묶기를 멈춘다: 조사·계사와, 한자 명사 바로 뒤에 조사 없이 자주 오는 말
+  const JA_STOP = new Set(('は が を に で と も の へ や か ね よ な わ ぞ から まで より だ です でも では には とは にも とも ' +
+    'なら だけ しか ほど くらい ぐらい など とか かな かも けど だけど けれど のに ので じゃ でした でしょう だろう だった ' +
+    'また もう まだ よく いい とても すぐ これ それ あれ この その あの ここ そこ こと もの ほうが たち').split(' '));
+
+  /** [{text, word}] -> [{text, word}] (이어 붙인 문자열은 그대로) */
+  function mergeJa(segs) {
+    const out = [];
+    const hira = (s) => !!s && s.word && JA_HIRA.test(s.text);
+    segs.forEach((s, i) => {
+      const prev = out[out.length - 1];
+      const next = hira(segs[i + 1]) ? segs[i + 1].text : '';
+      const t = s.text;
+      const okuri = () => {
+        if (!prev.stem) return false;
+        // 조사와 같은 꼴의 어미: 分か·り, 行か·ない, 曲が·って, 嬉しか·った, 分から·ない, 行かな·い
+        if (/^(か|が|しか)$/.test(t) && /^っ/.test(next)) return true;
+        if (/^[かが]$/.test(t) && next.length <= 2 && /^[らりるれ]/.test(next)) return true;
+        if ((t === 'か' || t === 'から') && next.length <= 2 && /^[なん]/.test(next)) return true;
+        if (t === 'かな' && /^[いか]/.test(next)) return true;
+        if (JA_STOP.has(t) || [...t].length > 3) return false;
+        return prev.grown || !JA_NOUN.test(prev.text) || /^[しすさ]/.test(t);
+      };
+      // っゃゅょんー 로 시작하는 조각은 단어의 첫머리일 수 없다 → 앞 단어에 붙인다
+      if (prev && prev.word && hira(s) && (/^[っゃゅょんー]/.test(t) || okuri())) {
+        prev.text += t;
+        prev.grown = true;
+      } else {
+        out.push({ text: t, word: s.word, stem: s.word && JA_HAN.test(t) && JA_STEM.test(t), grown: false });
+      }
+    });
+    return out.map(({ text, word }) => ({ text, word }));
+  }
+
+  /** 텍스트 -> [{text, word}] (word=true만 사전 조회 대상). 이어 붙이면 원문과 같다. */
   function segmentWords(text, lang) {
     let seg;
     try {
@@ -72,7 +115,36 @@
     } catch (e) {
       seg = new Intl.Segmenter(undefined, { granularity: 'word' }); // 잘못된 언어 태그
     }
-    return Array.from(seg.segment(text), (s) => ({ text: s.segment, word: !!s.isWordLike }));
+    // isWordLike는 쓰지 않는다: Firefox는 東京, です, 見 같은 단어도 false로 돌려준다.
+    const segs = Array.from(seg.segment(text), (s) => ({ text: s.segment, word: /[\p{L}\p{N}]/u.test(s.segment) }));
+    return langKey(lang) === 'ja' ? mergeJa(segs) : segs;
+  }
+
+  // ---- 사전 팝업의 선택 범위 조절 ----
+  const CJ = /[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}]/u;
+
+  /**
+   * 범위 조절 단위 [{text, word, seg}]: seg = segmentWords 세그먼트 번호.
+   * 한자·가나 단어는 글자마다 한 단위(분절이 틀려도 한 글자씩 줄여 바로잡을 수 있게).
+   */
+  function selectionUnits(text, lang) {
+    return segmentWords(text, lang).flatMap((s, seg) =>
+      (s.word && CJ.test(s.text) ? Array.from(s.text) : [s.text]).map((t) => ({ text: t, word: s.word, seg })));
+  }
+
+  /**
+   * 선택 [a, b)의 한쪽 끝을 옮긴다(공백·문장부호는 건너뜀). 넓힐 때는 세그먼트 하나, 줄일 때는 단위 하나.
+   * edge: 'start'|'end', dir: -1(앞으로)|1(뒤로). 못 옮기면 null.
+   */
+  function moveEdge(units, a, b, edge, dir) {
+    const start = edge === 'start';
+    const lo = start ? (dir < 0 ? 0 : a + 1) : (dir < 0 ? a : b);
+    const hi = start ? (dir < 0 ? a : b) : (dir < 0 ? b - 1 : units.length); // [lo, hi) 안에서 찾는다
+    let j = dir < 0 ? hi - 1 : lo;
+    while (j >= lo && j < hi && !units[j].word) j += dir;
+    if (j < lo || j >= hi) return null;
+    if (start === dir < 0) while (units[j + dir] && units[j + dir].seg === units[j].seg) j += dir; // 넓히기: 세그먼트 끝까지
+    return start ? [j, b] : [a, j + 1];
   }
 
   /**
@@ -98,7 +170,7 @@
     return u.href;
   }
 
-  const api = { pickTracks, parseJson3, cueAt, segmentWords, timedtextUrl };
+  const api = { pickTracks, parseJson3, cueAt, segmentWords, mergeJa, selectionUnits, moveEdge, timedtextUrl };
   Object.assign(globalThis, api);
   if (typeof module !== 'undefined') module.exports = api;
 })();
