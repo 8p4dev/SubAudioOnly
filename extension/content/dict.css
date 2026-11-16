@@ -24,13 +24,6 @@
   user-select: text;
 }
 
-@media (orientation: landscape) {
-  #sao-dict {
-    top: calc(8px + env(safe-area-inset-top, 0px));
-    bottom: auto;
-    max-height: min(70vh, 420px);
-  }
-}
 
 #sao-dict * {
   box-sizing: border-box;
@@ -45,12 +38,45 @@
   flex: none;
 }
 
-#sao-dict .sao-dict-word {
+#sao-dict .sao-dict-title {
   flex: 1;
   min-width: 0;
+  max-height: 3.2em; /* 범위를 넓혀 길어져도 머리줄이 팝업을 밀어내지 않게 */
+  overflow-y: auto;
+  overflow-wrap: anywhere;
+}
+
+#sao-dict .sao-dict-word {
   font-size: 18px;
   font-weight: 700;
+}
+
+/* 읽는 법(로마자 등) */
+#sao-dict .sao-dict-reading {
+  margin-left: 8px;
+  color: #aaa;
+  font-size: 13px;
+}
+
+/* 문맥 문장 + 선택 범위 강조 */
+#sao-dict .sao-dict-context {
+  position: relative; /* 선택 부분으로 스크롤할 때 offsetTop 기준 */
+  flex: none;
+  max-height: calc(4.35em + 12px); /* 3줄 */
+  overflow-y: auto;
+  overscroll-behavior: contain;
   overflow-wrap: anywhere;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #2b2b2b;
+  color: #bbb;
+  font-size: 14px;
+}
+
+#sao-dict .sao-dict-sel {
+  border-radius: 3px;
+  background: rgba(62, 166, 255, 0.45);
+  color: #fff;
 }
 
 #sao-dict button {
@@ -104,6 +130,36 @@
   font-size: 13px;
 }
 
+/* 선택 범위 조절: 시작 ◀ ▶ / 끝 ◀ ▶ */
+#sao-dict .sao-dict-range {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#sao-dict .sao-dict-range-label {
+  flex: none;
+  color: #aaa;
+  font-size: 12px;
+}
+
+#sao-dict .sao-dict-range button {
+  flex: 1 1 44px;
+  min-width: 44px;
+  background: #3a3a3a;
+  font-size: 16px;
+}
+
+#sao-dict .sao-dict-range button + .sao-dict-range-label {
+  margin-left: 8px;
+}
+
+#sao-dict .sao-dict-range button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 #sao-dict .sao-dict-add {
   padding: 0 16px;
   background: #3ea6ff;
@@ -115,6 +171,38 @@
   background: #3a3a3a;
   color: #aaa;
   cursor: default;
+}
+
+/* 가로: 화면이 낮으므로 2열로 펴서(왼쪽 조작, 오른쪽 뜻) 하단의 자막 줄을 가리지 않는다 */
+@media (orientation: landscape) {
+  #sao-dict {
+    top: calc(8px + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    width: min(720px, calc(100vw - 24px));
+    min-height: min(46vh, 240px);
+    max-height: min(55vh, 420px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: "head body" "context body" "range add";
+  }
+
+  #sao-dict .sao-dict-head { grid-area: head; }
+  #sao-dict .sao-dict-range { grid-area: range; }
+  #sao-dict .sao-dict-add { grid-area: add; }
+
+  #sao-dict .sao-dict-context {
+    grid-area: context;
+    max-height: calc(1.45em + 12px); /* 1줄, 가로 스크롤 */
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  #sao-dict .sao-dict-body {
+    grid-area: body;
+    contain: size; /* 왼쪽 열이 높이를 정하고, 뜻이 길면 이 안에서 스크롤 */
+    min-height: 44px;
+  }
 }
 
 /* 선택된 단어 강조(span 자체는 subs 소유, 클래스만 토글) */

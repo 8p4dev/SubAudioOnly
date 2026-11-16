@@ -29,6 +29,19 @@ test('parseLookup: 사전 항목이 없는 응답([1]이 null)', () => {
   assert.deepStrictEqual(parseLookup('食べる', data), { word: '食べる', translation: '먹다', entries: [] });
 });
 
+test('parseLookup: 읽는 법(dt=rm)', () => {
+  // 실제 응답(ja->ko)을 줄인 것: 사전 항목은 없고 번역과 읽는 법만 온다
+  const ja = [[['먹었다', '食べました', null, null, 3], [null, null, 'meog-eossda', 'Tabemashita']], null, 'ja'];
+  assert.deepStrictEqual(parseLookup('食べました', ja),
+    { word: '食べました', translation: '먹었다', reading: 'Tabemashita', entries: [] });
+  // en->ko: 원문 읽기가 없으면(길이 3) reading 없음
+  const en = [[['찾다', 'pick up', null, null, 10], [null, null, 'chajda']], null, 'en'];
+  assert.deepStrictEqual(parseLookup('pick up', en), { word: 'pick up', translation: '찾다', entries: [] });
+  // 원문과 같은 읽기는 버린다
+  const fr = [[['먹다', 'manger', null, null, 10], [null, null, 'meogda', 'Manger']], null, 'fr'];
+  assert.strictEqual('reading' in parseLookup('manger', fr), false);
+});
+
 test('parseLookup: 깨진 응답', () => {
   assert.throws(() => parseLookup('x', null));
   assert.throws(() => parseLookup('x', { error: 'nope' }));
