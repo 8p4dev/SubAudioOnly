@@ -16,12 +16,13 @@ globalThis.SAO = (() => {
   // 메시지 타입 (content/UI -> background)
   const MSG = {
     LOOKUP: 'sao:lookup',     // {word, from, to} -> LookupResult
+    TRANSLATE_BATCH: 'sao:translate-batch', // {texts:string[], from, to} -> string[] (같은 길이, 실패한 항목은 '')
     CAPTIONS: 'sao:captions', // subs 에이전트 내부용 (payload는 subs 에이전트가 정의)
     AUDIO: 'sao:audio',       // audio 에이전트 내부용 (payload는 audio 에이전트가 정의)
   };
 
   /**
-   * @typedef {{word:string, translation:string, entries:{pos:string, terms:string[]}[]}} LookupResult
+   * @typedef {{word:string, translation:string, reading?:string, entries:{pos:string, terms:string[]}[]}} LookupResult
    * @typedef {{id:string, word:string, meaning:string, context:string, contextTranslation:string,
    *   lang:string, videoId:string, videoTitle:string, time:number, addedAt:number}} VocabItem
    */

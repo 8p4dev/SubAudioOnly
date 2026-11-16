@@ -78,8 +78,11 @@
     return parseJson3(json);
   }
 
-  function setCues(next) {
+  // 다른 content script(단어 목록 등)가 현재 영상의 자막을 읽을 수 있게 공개한다(계약: SAO.subs + 'sao:cues' 이벤트).
+  function setCues(next, vid = null) {
     cues = next;
+    SAO.subs = vid ? { videoId: vid, lang: settings.targetLang, target: next.target, native: next.native } : null;
+    document.dispatchEvent(new CustomEvent('sao:cues'));
     document.documentElement.classList.toggle('sao-overlay-on', !!(cues.target.length || cues.native.length));
     render();
   }
@@ -109,7 +112,7 @@
       ]);
       if (loadedKey !== key) return;
       if (!target.length && !native.length) warn('자막 본문을 가져오지 못함', vid);
-      setCues({ target, native });
+      setCues({ target, native }, vid);
     } catch (e) {
       warn(e);
     }

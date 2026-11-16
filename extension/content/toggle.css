@@ -1,0 +1,75 @@
+/* 플레이어 좌상단 빠른 스위치. 평소에는 반투명한 작은 버튼 하나만 보인다. */
+#sao-toggle {
+  all: initial;
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2147483100;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 13px/1 system-ui, sans-serif;
+  pointer-events: none;
+}
+
+#sao-toggle button {
+  all: unset;
+  box-sizing: border-box;
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  color: #fff;
+  text-align: center;
+}
+
+#sao-toggle .sao-toggle-main {
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  border-radius: 50%;
+  background: rgba(40, 40, 40, 0.7);
+  font-size: 16px;
+  opacity: 0.55;
+}
+
+#sao-toggle .sao-toggle-main[aria-expanded="true"] {
+  opacity: 1;
+}
+
+/* 세 기능이 모두 꺼져 있으면 더 흐리게 */
+#sao-toggle .sao-toggle-main.sao-toggle-off {
+  opacity: 0.3;
+}
+
+#sao-toggle .sao-toggle-panel {
+  display: flex;
+  gap: 6px;
+}
+
+#sao-toggle .sao-toggle-panel[hidden] {
+  display: none;
+}
+
+#sao-toggle .sao-toggle-chip {
+  min-width: 44px;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 12px;
+  border-radius: 16px;
+  background: rgba(40, 40, 40, 0.85);
+  color: #9a9a9a;
+  text-decoration: line-through;
+}
+
+#sao-toggle .sao-toggle-chip[aria-pressed="true"] {
+  background: #3ea6ff;
+  color: #0f0f0f;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#sao-toggle button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
