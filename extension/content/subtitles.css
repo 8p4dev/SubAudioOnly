@@ -36,6 +36,13 @@
   color: #ffe9a8;
 }
 
+/* 학습 언어 줄: 탭 영역을 키운다. 줄의 빈 곳을 누르면 dict.js가 가장 가까운 단어로 처리한다. */
+#sao-overlay .sao-line-target {
+  padding: 6px 8px;
+  line-height: 1.6;
+  pointer-events: auto;
+}
+
 #sao-overlay .sao-word {
   pointer-events: auto;
   cursor: pointer;

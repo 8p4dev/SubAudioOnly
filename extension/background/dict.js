@@ -1,4 +1,4 @@
-// R4 사전 조회 — Google 번역 무료 엔드포인트의 사전 응답(dt=bd)만 사용.
+// R4 사전 조회 — Google 번역 무료 엔드포인트. 번역(dt=t) + 사전 항목(dt=bd, 영어가 낀 쌍에서만 옴) + 읽는 법(dt=rm).
 'use strict';
 
 (() => {
@@ -14,6 +14,10 @@
       .map((e) => ({ pos: str(e[0]) ? e[0] : '', terms: e[1].filter(str) }))
       .filter((e) => e.terms.length);
     if (!translation && !entries.length) throw new Error('뜻을 찾지 못했습니다');
+    // dt=rm: [0]의 원소 [null, null, 번역의 로마자, 원문의 읽는 법]. 원문과 같으면(라틴 문자 언어) 의미가 없다.
+    const rm = (Array.isArray(data[0]) ? data[0] : []).find((seg) => Array.isArray(seg) && seg[0] == null && str(seg[3]));
+    const reading = rm ? rm[3].trim() : '';
+    if (reading && reading.toLowerCase() !== word.toLowerCase()) return { word, translation, reading, entries };
     return { word, translation, entries };
   };
 
@@ -28,7 +32,7 @@
     if (!word) throw new Error('단어가 비어 있습니다');
     const key = `${from}|${to}|${word}`;
     if (cache.has(key)) return cache.get(key);
-    const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&' +
+    const url = 'https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&dt=bd&dt=rm&' +
       new URLSearchParams({ sl: GOOGLE_LANG[from] || from, tl: GOOGLE_LANG[to] || to, q: word });
     const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
     if (!res.ok) throw new Error(`사전 서버 오류 (HTTP ${res.status})`);
