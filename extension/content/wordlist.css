@@ -164,3 +164,9 @@
   border-radius: 0;
   color: #3ea6ff;
 }
+
+/* 사전 팝업에서 조회 중인 단어 강조(위의 all: unset보다 우선해야 한다) */
+#sao-words .sao-word.sao-dict-active {
+  background: rgba(62, 166, 255, 0.45);
+  border-radius: 3px;
+}

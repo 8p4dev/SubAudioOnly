@@ -56,8 +56,10 @@
   document.addEventListener('click', (e) => {
     const b = hit(e);
     if (!b) return;
+    const handled = e.defaultPrevented; // 사전 팝업이 열려 있었다면 dict.js가 이 탭으로 팝업만 닫는다
     e.preventDefault();
     e.stopPropagation();
+    if (handled) return;
     if (b === main) return setOpen(panel.hidden);
     if (b === wordsBtn) {
       setOpen(false);

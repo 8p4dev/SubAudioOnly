@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "SubAudioOnly",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "외국어 공부용: YouTube 오디오 전용 재생 + 이중 자막 + 클릭 사전 + 단어장",
   "browser_specific_settings": {
     "gecko": {

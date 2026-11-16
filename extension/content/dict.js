@@ -4,9 +4,14 @@
 
 (() => {
   let settings = SAO.DEFAULTS;
-  SAO.getSettings().then((s) => { settings = s; });
-  SAO.onSettingsChanged((s) => {
+  // 사전이 꺼져 있으면 자막 줄이 탭을 받지 않게 한다(dict.css) — 플레이어 조작을 막지 않도록.
+  const applySettings = (s) => {
     settings = s;
+    document.documentElement.classList.toggle('sao-dict-off', !s.dictionary);
+  };
+  SAO.getSettings().then(applySettings);
+  SAO.onSettingsChanged((s) => {
+    applySettings(s);
     if (!s.dictionary) close();
   });
 
@@ -210,10 +215,13 @@
   async function addToVocab(btn) {
     if (btn.disabled || !item || item.meaning === undefined) return;
     btn.disabled = true;
+    const mine = item;
     try {
       await SAO.vocab.add(item);
+      if (item !== mine) return; // 저장하는 사이 선택 범위가 바뀜
       btn.textContent = '추가됨';
     } catch (e) {
+      if (item !== mine) return;
       btn.textContent = '추가 실패 — 다시 시도';
       btn.disabled = false;
     }

@@ -87,3 +87,12 @@ test('translateBatch: HTTP 오류면 남은 묶음을 보내지 않고 빈 문�
   assert.deepEqual(out, texts.map(() => ''));
   assert.equal(calls.length, 1);
 });
+
+test('extractWords: 글자 없는 토큰 제외, NFC 정규화, 일본어 한 글자 조사 제외', () => {
+  const cue = (text, start = 0) => ({ start, end: start + 1000, text });
+  const fr = extractWords([cue('1️⃣ 2024 école école')], [], 'fr').map((w) => w.key);
+  assert.deepStrictEqual(fr, ['école']);
+  const ja = extractWords([cue('私は学生です')], [], 'ja').map((w) => w.word);
+  assert.ok(!ja.includes('は'));
+  assert.ok(ja.some((w) => w.includes('学生')));
+});

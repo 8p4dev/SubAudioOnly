@@ -11,10 +11,13 @@
    */
   function extractWords(target, native, lang) {
     const map = new Map();
+    // 글자가 없는 토큰(숫자, 기호)은 뺀다.
+    // ponytail: 일본어는 히라가나 한 글자(대부분 조사)만 뺀다. 두 글자 이상 조사·조동사는 목록에 남는다.
+    const noise = /^ja/i.test(lang || '') ? /^\p{Script=Hiragana}$/u : null;
     for (const cue of target || []) {
       for (const s of segmentWords(cue.text, lang)) {
-        if (!s.word || /^[\p{N}.,]+$/u.test(s.text)) continue;
-        const key = s.text.toLowerCase();
+        if (!s.word || !/\p{L}/u.test(s.text) || (noise && noise.test(s.text))) continue;
+        const key = s.text.normalize('NFC').toLowerCase();
         const w = map.get(key);
         if (w) w.count++;
         else {
