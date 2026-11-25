@@ -1,64 +1,55 @@
 # SubAudioOnly
 
-팟캐스트처럼 YouTube를 들으며 외국어를 공부하기 위한 Firefox(Android) 익스텐션입니다.
+유튜브를 팟캐스트처럼 틀어 놓고 외국어 공부할 때 쓰려고 만든 Firefox 확장입니다. 안드로이드 Firefox 기준으로 만들었고 데스크톱에서도 돌아갑니다.
 
-- **오디오 전용 재생** — 영상은 불러오지 않고 소리만 재생합니다. 화면에는 검은 배경과 자막만 남습니다.
-- **이중 자막** — 학습 언어와 자국어 자막을 함께 보여 줍니다. 한쪽 자막만 있으면 YouTube 자동번역으로 채웁니다.
-- **단어 사전** — 자막의 단어를 탭하면 자국어 뜻이 나옵니다.
-- **단어장** — 찾아본 단어를 저장하고, 마크다운 표로 복사해 노션 등에 붙여넣을 수 있습니다.
+영상은 안 받고 소리만 틀어 주고, 화면에는 자막 두 줄(학습 언어 + 내 언어)만 남깁니다. 모르는 단어는 눌러서 뜻을 보고 단어장에 담아 두면 됩니다.
 
-| 이중 자막 | 사전 | 설정 | 단어장 |
+| 자막 | 사전 | 영상 단어 목록 | 단어장 |
 | --- | --- | --- | --- |
-| ![이중 자막](docs/screenshots/subtitles.png) | ![사전](docs/screenshots/dictionary.png) | ![설정](docs/screenshots/options.png) | ![단어장](docs/screenshots/vocab.png) |
+| ![자막과 빠른 스위치](docs/screenshots/subtitles.png) | ![사전 팝업](docs/screenshots/dictionary.png) | ![단어 목록](docs/screenshots/words.png) | ![단어장](docs/screenshots/vocab.png) |
 
-## 상태
+## 설치
 
-아직 실제 기기에서 검증하지 못한 초기 버전입니다. 단위 테스트와 린트만 통과한 상태이고, YouTube 쪽 변경에 따라 오디오 전용 재생이나 자막 로딩이 동작하지 않을 수 있습니다.
+**[subaudioonly.xpi 내려받기](https://github.com/8p4dev/SubAudioOnly/releases/latest/download/subaudioonly.xpi)** (Mozilla 서명본, Firefox 125 이상)
 
-## 설치 (개발용)
+안드로이드
 
-Firefox 125 이상이 필요합니다.
+1. 위 파일을 폰에 받습니다.
+2. Firefox 설정 > Firefox 정보에서 로고를 다섯 번 누르면 디버그 메뉴가 켜집니다.
+3. 설정으로 돌아가 "파일에서 확장 기능 설치"를 누르고 받은 파일을 고릅니다.
 
-```sh
-# 데스크톱 Firefox에서 실행
-npx web-ext run -s extension
+데스크톱은 `about:addons` 톱니바퀴 메뉴의 "파일에서 부가 기능 설치"로 넣으면 됩니다.
 
-# Android (USB 디버깅 + Firefox Nightly)
-npx web-ext run -s extension --target=firefox-android --android-device=<기기 ID>
-```
+지난 버전은 [Releases](https://github.com/8p4dev/SubAudioOnly/releases)에 있습니다.
 
-## 설정
+## 쓰는 법
 
-툴바 버튼에서 기능을 켜고 끌 수 있고, 설정 페이지에서 아래 항목을 바꿀 수 있습니다.
+유튜브 영상을 열면 플레이어 왼쪽 위에 ♪ 버튼이 생깁니다. 누르면 스위치가 펼쳐집니다.
 
-| 항목 | 기본값 |
-| --- | --- |
-| 학습 언어 | 영어 |
-| 자국어 | 한국어 |
-| 오디오 전용 | 켜짐 |
-| 이중 자막 | 켜짐 |
-| 단어 클릭 사전 | 켜짐 |
-| 자막 크기 | 1.0배 |
+- 소리만 / 자막 / 사전: 각각 켜고 끄기
+- ≡ 단어: 이 영상 자막에 나오는 단어를 한꺼번에 보기
+
+자막에서 단어를 누르면 뜻이 뜹니다. 단어가 이상하게 잘렸으면 팝업의 ◀ ▶ 로 범위를 늘리거나 줄일 수 있어요. 일본어처럼 띄어쓰기가 없는 언어에서 특히 쓸 일이 많습니다.
+
+단어장은 툴바의 확장 버튼에서 열 수 있고, "마크다운 복사"를 누른 뒤 노션에 붙이면 표로 들어갑니다.
+
+학습 언어와 내 언어는 설정에서 바꿉니다. 기본값은 영어 → 한국어.
+
+## 알아둘 것
+
+- 영상에 원하는 언어 자막이 없으면 유튜브 자동번역으로 채웁니다. 자막이 아예 없는 영상에서는 아무것도 안 나옵니다.
+- 뜻은 Google 번역에서 가져옵니다. 누른 단어와 단어 목록의 단어가 Google로 전송됩니다. 그 밖의 설정과 단어장은 브라우저 안에만 저장됩니다.
+- 단어 목록의 뜻은 문맥 없이 번역한 거라 어색한 게 섞여 있습니다. 정확한 뜻은 단어를 눌러서 확인하세요.
+- 일본어 단어 묶기는 규칙 몇 개로 하는 거라 틀릴 때가 있습니다.
+- 유튜브가 구조를 바꾸면 소리만 재생이나 자막이 깨질 수 있습니다. 그럴 땐 ♪에서 해당 기능만 끄고 쓰면 됩니다.
 
 ## 개발
 
-빌드 과정과 의존성이 없는 순수 JS입니다.
+빌드 단계도 의존성도 없습니다. `extension/` 폴더가 그대로 확장입니다.
 
 ```sh
-npm test        # 단위 테스트 + 문법 검사
-npm run lint    # web-ext lint
-npm run build   # dist/ 에 zip 생성
+npx web-ext run -s extension   # 데스크톱 Firefox에서 바로 실행
+npm test
+npm run lint
+npm run build                  # dist/ 에 zip
 ```
-
-```
-extension/
-  shared/      설정, 메시지, 단어장 저장소
-  background/  사전 조회, 자막 요청 관찰
-  content/     오디오 전용, 자막 오버레이, 사전 팝업
-  options/ popup/ vocab/   설정 · 빠른 토글 · 단어장 페이지
-```
-
-## 참고
-
-- 사전은 Google 번역의 비공식 엔드포인트를 사용합니다. 탭한 단어가 Google로 전송되며, 요청이 많으면 일시적으로 막힐 수 있습니다.
-- 설정과 단어장은 브라우저 로컬 저장소에만 저장됩니다.
